@@ -28,7 +28,6 @@ jobs:
     steps:
       - name: Assign Issue to Assignees
         uses: wow-actions/auto-assign@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           assignees: dallingson, thesugarwookie, coconinokid53
