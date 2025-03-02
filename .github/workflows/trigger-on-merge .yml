@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Assign Issue to Assignees
-        uses: peter-evans/assign-issue@v2
+        uses: peter-evans/assign-issue-action@v2
         with:
           issue-number: ${{ github.event.issue.number }}
           assignees: 'dallinGson, SugarWookie, CoconinoKid53'
