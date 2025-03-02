@@ -13,6 +13,8 @@ permissions:
   pull-requests: write
 
 jobs:
+
+# NOT SURE IF THIS WILL WORK
   handle-merge:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -23,6 +25,8 @@ jobs:
       - name: Run script or task on merge
         run: echo "Merge detected on main!"
 
+
+        # THIS WORKS
   handle-issue:
     runs-on: ubuntu-latest
     steps:
