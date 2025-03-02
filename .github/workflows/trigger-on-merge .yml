@@ -22,14 +22,10 @@ jobs:
           echo "Merge detected on main!"
 
   handle-issue:
-    if: github.event_name == 'issues'
     runs-on: ubuntu-latest
-
     steps:
       - name: Assign Issue to Assignees
         uses: wow-actions/auto-assign@v2
         with:
-          issue-number: ${{ github.event.issue.number }}
-          assignees: dallinGson, SugarWookie, CoconinoKid53
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          assignees: dallinGson, SugarWookie, CoconinoKid53         
