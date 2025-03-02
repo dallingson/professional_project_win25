@@ -8,24 +8,27 @@ on:
   issues:
     types: [opened]  # Triggered when an issue is created
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   handle-merge:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Run script or task on merge
-        run: |
-          echo "Merge detected on main!"
+        run: echo "Merge detected on main!"
 
   handle-issue:
     runs-on: ubuntu-latest
     steps:
       - name: Assign Issue to Assignees
         uses: wow-actions/auto-assign@v2
-        with:
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          assignees: dallingson, thesugarwookie, coconinokid53         
+        with:
+          assignees: dallingson, thesugarwookie, coconinokid53
