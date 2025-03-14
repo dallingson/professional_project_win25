@@ -1,4 +1,4 @@
-name: Convert Markdown to HTML
+name: Convert Markdown to HTML and Update Internships Page
 
 on:
   push:
@@ -22,13 +22,26 @@ jobs:
         run: |
           for file in internships/*.md; do
             filename=$(basename -- "$file" .md)
-            pandoc "$file" -o "internships/${filename}.html" --template=templates/internship-template.html
+            pandoc "$file" -o "./frontend/pages/internship-details/${filename}.html" --template=./templates/internship-template.html
+            
+            # Extract title and description from the Markdown file
+            title=$(head -n 1 "$file" | sed 's/# //')
+            description=$(grep -m 1 -oP "(?<=\*\*Description:\*\* ).*" "$file")
+            video_link=$(grep -m 1 -oP "(?<=\*\*Video:\*\* ).*" "$file")
+            
+            # Append new internship entry to internships.html
+            sed -i '/<!-- INSERT NEW INTERNSHIPS HERE -->/i \
+            <a href="./internship-details/'"$filename"'.html" class="internship-tile"> \
+                <div class="internship-banner">'"$title"'</div> \
+                <iframe src="'"$video_link"'" allowfullscreen></iframe> \
+                <p>'"$description"'</p> \
+            </a>' frontend/pages/internships.html
           done
 
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add internships/*.html
-          git commit -m "Generated HTML from Markdown for new internship entry"
+          git add frontend/pages/internship-details/*.html frontend/pages/internships.html
+          git commit -m "Updated internship listings with new entries"
           git push
