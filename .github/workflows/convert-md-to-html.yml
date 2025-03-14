@@ -22,7 +22,7 @@ jobs:
         run: |
           for file in internships/*.md; do
             filename=$(basename -- "$file" .md)
-            pandoc "$file" -o "/frontend/pages/internship-details/${filename}.html" --template=templates/internship-template.html
+            pandoc "$file" -o "../frontend/pages/internship-details/${filename}.html" --template=../templates/internship-template.html
             
             # Extract title and description from the Markdown file
             title=$(head -n 1 "$file" | sed 's/# //')
