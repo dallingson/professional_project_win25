@@ -37,25 +37,26 @@ jobs:
 
       - name: Update Internships Page with Tiles
         run: |
-          internship_tiles=""
-          for file in frontend/pages/internship-details/*.html; do
-            filename=$(basename -- "$file" .html)
-            
-            # Extract the intern's name and company name from the Markdown
-            name=$(grep -oP '(?<=name: ).*' "internships/$filename.md" | head -1)
-            company=$(grep -oP '(?<=company: ).*' "internships/$filename.md" | head -1)
-
-            internship_tiles+="
-                <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">
-                    <div class=\"internship-banner\">${name} - ${company}</div>
-                    <p>Click to view internship details</p>
-                </a>"
-          done
-
-          awk -v tiles="$internship_tiles" '
-            /<h2>Featured Student Internships<\/h2>/ {print; print "<div class=\"featured-internships\">"; print tiles; print "</div>"; next}
-            {print}
-          ' frontend/pages/internships.html
+            internship_tiles=""
+            for file in frontend/pages/internship-details/*.html; do
+              filename=$(basename -- "$file" .html)
+  
+              # Extract the intern's name and company name from the Markdown
+              name=$(grep -oP '(?<=name: ).*' "internships/$filename.md" | head -1)
+              company=$(grep -oP '(?<=company: ).*' "internships/$filename.md" | head -1)
+  
+              internship_tiles+="
+                  <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">
+                      <div class=\"internship-banner\">${name} - ${company}</div>
+                      <p>Click to view internship details</p>
+                  </a>"
+            done
+  
+            # Corrected: Write `awk` output back into internships.html
+            awk -v tiles="$internship_tiles" '
+              /<h2>Featured Student Internships<\/h2>/ {print; print "<div class=\"featured-internships\">"; print tiles; print "</div>"; next}
+              {print}
+            ' frontend/pages/internships.html > frontend/pages/internships.tmp && mv frontend/pages/internships.tmp frontend/pages/internships.html
 
       - name: Commit and Push Changes
         run: |
