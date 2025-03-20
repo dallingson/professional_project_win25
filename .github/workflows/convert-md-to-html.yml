@@ -18,36 +18,45 @@ jobs:
       - name: Install Pandoc
         run: sudo apt-get install -y pandoc
 
+      - name: Create Internship Details Directory
+        run: mkdir -p frontend/pages/internship_details
+
       - name: Convert Markdown to HTML
         run: |
-          mkdir -p internship_details
           for file in internships/*.md; do
             filename=$(basename -- "$file" .md)
-            pandoc "$file" -o "internship-details/${filename}.html" --template=templates/internship-template.html
+            pandoc "$file" -o "frontend/pages/internship_details/${filename}.html" --template=templates/internship-template.html
           done
+
+      - name: Ensure Internships Page Exists
+        run: |
+          if [ ! -f frontend/pages/internships.html ]; then
+            echo "ERROR: frontend/pages/internships.html not found!"
+            exit 1
+          fi
 
       - name: Update Internships Page with Tiles
         run: |
           internship_tiles=""
-          for file in internship-details/*.html; do
+          for file in frontend/pages/internship_details/*.html; do
             filename=$(basename -- "$file" .html)
             title=$(grep -oP '(?<=<h1>).*?(?=</h1>)' "$file" | head -1)
             internship_tiles+="
-                <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">
+                <a href=\"./internship_details/${filename}.html\" class=\"internship-tile\">
                     <div class=\"internship-banner\">${title}</div>
                     <p>Click to view internship details</p>
                 </a>"
           done
-          
+
           awk -v tiles="$internship_tiles" '
             /<h2>Featured Student Internships<\/h2>/ {print; print "<div class=\"featured-internships\">"; print tiles; print "</div>"; next}
             {print}
-          ' internships.html > internships_new.html && mv internships_new.html internships.html
+          ' frontend/pages/internships.html > frontend/pages/internships_new.html && mv frontend/pages/internships_new.html frontend/pages/internships.html
 
-      - name: Commit and push changes
+      - name: Commit and Push Changes
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add internship-details/*.html internships.html
-          git commit -m "Converted Markdown to HTML and updated internship tiles"
+          git add frontend/pages/internship_details/*.html frontend/pages/internships.html
+          git commit -m "Converted Markdown to HTML and updated internship tiles" || echo "No changes to commit"
           git push
