@@ -1,10 +1,10 @@
 ---
-name: Alice Smith
-company: Microsoft
-location: Redmond, WA
-start_date: July 2025
-end_date: September 2025
-position: Data Science Intern
+name: "Alice Smith"
+company: "Microsoft"
+location: "Redmond, WA"
+start_date: "July 2025"
+end_date: "September 2025"
+position: "Data Science Intern"
 ---
 
 ## Internship Details
