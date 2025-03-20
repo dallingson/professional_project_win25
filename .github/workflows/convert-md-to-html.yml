@@ -20,7 +20,7 @@ jobs:
 
       - name: Convert Markdown to HTML
         run: |
-          mkdir -p internship_details
+          mkdir -p internship-details
           for file in internships/*.md; do
             filename=$(basename -- "$file" .md)
             pandoc "$file" -o "internship-details/${filename}.html" --template=templates/internship-template.html
