@@ -1,9 +1,10 @@
 ---
-name: [Intern's Name]
-company: [Company Name]
-position: [Internship Position]
-date: [Internship Duration]
+name: [Student Name]
+company: [Internship Company]
 location: [Internship Location]
+start_date: [Month Year]
+end_date: [Month Year]
+position: [Internship Position]
 ---
 
 # Internship at [Company Name]
