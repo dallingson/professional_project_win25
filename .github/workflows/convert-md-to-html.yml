@@ -22,17 +22,17 @@ jobs:
         run: |
           for file in internships/*.md; do
             filename=$(basename -- "$file" .md)
-            pandoc "$file" -o "internship_details/${filename}.html" --template=templates/internship-template.html
+            pandoc "$file" -o "internship-details/${filename}.html" --template=templates/internship-template.html
           done
 
       - name: Update Internships Page with Tiles
         run: |
           internship_tiles=""
-          for file in internship_details/*.html; do
+          for file in internship-details/*.html; do
             filename=$(basename -- "$file" .html)
             title=$(grep -oP '(?<=<h1>).*?(?=</h1>)' "$file" | head -1)
             internship_tiles+="
-                <a href=\"./internship_details/${filename}.html\" class=\"internship-tile\">
+                <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">
                     <div class=\"internship-banner\">${title}</div>
                     <p>Click to view internship details</p>
                 </a>"
@@ -47,6 +47,6 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add internship_details/*.html internships.html
+          git add internship-details/*.html internships.html
           git commit -m "Converted Markdown to HTML and updated internship tiles"
           git push
