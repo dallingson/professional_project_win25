@@ -22,13 +22,31 @@ jobs:
         run: |
           for file in internships/*.md; do
             filename=$(basename -- "$file" .md)
-            pandoc "$file" -o "internships/${filename}.html" --template=templates/internship-template.html
+            pandoc "$file" -o "internship_details/${filename}.html" --template=templates/internship-template.html
           done
+
+      - name: Update Internships Page with Tiles
+        run: |
+          internship_tiles=""
+          for file in internship_details/*.html; do
+            filename=$(basename -- "$file" .html)
+            title=$(grep -oP '(?<=<h1>).*?(?=</h1>)' "$file" | head -1)
+            internship_tiles+="
+                <a href=\"./internship_details/${filename}.html\" class=\"internship-tile\">
+                    <div class=\"internship-banner\">${title}</div>
+                    <p>Click to view internship details</p>
+                </a>"
+          done
+          
+          awk -v tiles="$internship_tiles" '
+            /<h2>Featured Student Internships<\/h2>/ {print; print "<div class=\"featured-internships\">"; print tiles; print "</div>"; next}
+            {print}
+          ' internships.html > internships_new.html && mv internships_new.html internships.html
 
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add internships/*.html
-          git commit -m "Converted Markdown to HTML"
+          git add internship_details/*.html internships.html
+          git commit -m "Converted Markdown to HTML and updated internship tiles"
           git push
