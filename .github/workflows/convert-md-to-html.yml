@@ -74,7 +74,7 @@ jobs:
   
               internship_tiles+="
                   <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">\n
-                      <div class=\"internship-banner\" style=\"background-image: url('${image}');\">\n
+                      <div class=\"internship-banner\" style=\"background-image: url(${image});\">\n
                           <div class=\"internship-info\">${name} - ${company}</div>\n
                       </div>\n
                       <p>Click to view internship details</p>\n
