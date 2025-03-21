@@ -1,5 +1,5 @@
 ---
-name: "Alice Smith"
+name: "Jane Doe"
 company: "Microsoft"
 location: "Redmond, WA"
 start_date: "July 2025"
