@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'internships/*.md'
+      - 'images/*'
 
 jobs:
   convert-markdown:
@@ -38,6 +39,7 @@ jobs:
             name=$(grep -oP '(?<=name: ).*' "$file" | head -1)
             company=$(grep -oP '(?<=company: ).*' "$file" | head -1)
             position=$(grep -oP '(?<=position: ).*' "$file" | head -1)
+            image=$(grep -oP '(?<=image: ).*' "$file" | head -1)
             summary=$(awk '/## Internship Details/,/## Key Responsibilities/' "$file" | sed -e '1d' -e '$d' | tr '\n' ' ')
             responsibilities=$(awk '/## Key Responsibilities/,/## Skills Gained/' "$file" | sed -e '1d' -e '$d' | sed 's/^/- /' | tr '\n' ' ')
             skills=$(awk '/## Skills Gained/,/^$/' "$file" | sed -e '1d' -e '$d' | sed 's/^/- /' | tr '\n' ' ')
@@ -48,11 +50,9 @@ jobs:
             pandoc "$file" -o "frontend/pages/internship-details/${filename}.html" \
               --template=templates/internship-template.html \
               -V name="$name" -V company="$company" -V position="$position" \
-              -V summary="$summary" -V responsibilities="$responsibilities" \
+              -V image="$image" -V summary="$summary" -V responsibilities="$responsibilities" \
               -V skills="$skills" -V reflection="$reflection" -V video_link="$video_link"
           done
-      
-
 
       - name: Ensure Internships Page Exists
         run: |
@@ -67,14 +67,17 @@ jobs:
             for file in frontend/pages/internship-details/*.html; do
               filename=$(basename -- "$file" .html)
   
-              # Extract the intern's name and company name from the Markdown
+              # Extract the intern's name, company name, and image from the Markdown
               name=$(grep -oP '(?<=name: ).*' "internships/$filename.md" | head -1)
               company=$(grep -oP '(?<=company: ).*' "internships/$filename.md" | head -1)
+              image=$(grep -oP '(?<=image: ).*' "internships/$filename.md" | head -1)
   
               internship_tiles+="
-                  <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">
-                      <div class=\"internship-banner\">${name} - ${company}</div>
-                      <p>Click to view internship details</p>
+                  <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">\n
+                      <div class=\"internship-banner\" style=\"background-image: url('${image}');\">\n
+                          <div class=\"internship-info\">${name} - ${company}</div>\n
+                      </div>\n
+                      <p>Click to view internship details</p>\n
                   </a>"
             done
   
@@ -89,5 +92,5 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add frontend/pages/internship-details/*.html frontend/pages/internships.html
-          git commit -m "Converted Markdown to HTML and updated internship tiles" || echo "No changes to commit"
+          git commit -m "Converted Markdown to HTML and updated internship tiles with images" || echo "No changes to commit"
           git push

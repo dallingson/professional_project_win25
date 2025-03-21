@@ -5,6 +5,7 @@ location: "Redmond, WA"
 start_date: "July 2025"
 end_date: "September 2025"
 position: "Data Science Intern"
+image: "images/placeholder.jpg"
 ---
 
 ## Internship Details

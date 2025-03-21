@@ -5,6 +5,7 @@ location: "Seattle, WA"
 start_date: "May 2025"
 end_date: "August 2025"
 position: "Product Management Intern"
+image: "images/placeholder.jpg"
 ---
 
 ## Internship Details

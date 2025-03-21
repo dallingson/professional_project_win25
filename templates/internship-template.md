@@ -5,6 +5,7 @@ location: "[Location]"
 start_date: "[Start Date]"
 end_date: "[End Date]"
 position: "[Position]"
+image: "images/placeholder.jpg"
 ---
 
 ## Internship Details
