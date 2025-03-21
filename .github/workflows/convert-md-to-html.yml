@@ -23,9 +23,17 @@ jobs:
 
       - name: Convert Markdown to HTML
         run: |
-          for file in internships/*.md; do
+          shopt -s nullglob  # Prevent errors if no files match
+          files=(internships/*.md)
+          
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No Markdown files found. Skipping conversion."
+            exit 0
+          fi
+      
+          for file in "${files[@]}"; do
             filename=$(basename -- "$file" .md)
-            
+      
             # Extract metadata
             name=$(grep -oP '(?<=name: ).*' "$file" | head -1)
             company=$(grep -oP '(?<=company: ).*' "$file" | head -1)
@@ -35,7 +43,7 @@ jobs:
             skills=$(awk '/## Skills Gained/,/^$/' "$file" | sed -e '1d' -e '$d' | sed 's/^/- /' | tr '\n' ' ')
             reflection=$(awk '/## Intern Reflection/,/## Video Summary/' "$file" | sed -e '1d' -e '$d' | tr '\n' ' ')
             video_link=$(grep -oP '(?<=iframe src=").*(?=")' "$file" | head -1)
-
+      
             # Convert to HTML
             pandoc "$file" -o "frontend/pages/internship-details/${filename}.html" \
               --template=templates/internship-template.html \
@@ -43,6 +51,7 @@ jobs:
               -V summary="$summary" -V responsibilities="$responsibilities" \
               -V skills="$skills" -V reflection="$reflection" -V video_link="$video_link"
           done
+      
 
 
       - name: Ensure Internships Page Exists
