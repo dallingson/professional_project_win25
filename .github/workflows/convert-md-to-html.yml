@@ -67,7 +67,6 @@ jobs:
         run: |
           # Delete everything between <h2> and </section> but keep the tags
           sed -i '/<h2>Featured Student Internships<\/h2>/,/<\/section>/ {
-          /<\/section>/!d
           }' frontend/pages/internships.html
         
         
