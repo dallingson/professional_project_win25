@@ -67,26 +67,7 @@ jobs:
         run: |
           internship_tiles=""
           
-          # Clear old internship tiles by removing content inside the featured-internships div (while keeping <h2> tag)
-          awk '
-            /<h2>Featured Student Internships<\/h2>/ { 
-              print; 
-              inside=1; 
-              next 
-            } 
-            inside && /<\/div>/ { 
-              print "</div>"; 
-              inside=0; 
-              next 
-            } 
-            inside { 
-              next 
-            } 
-            { 
-              print 
-            }' frontend/pages/internships.html > frontend/pages/internships.tmp && mv frontend/pages/internships.tmp frontend/pages/internships.html
-
-          # Generate new internship tiles
+          # Gather internship tiles for the updated internships
           for file in frontend/pages/internship-details/*.html; do
             filename=$(basename -- "$file" .html)
             md_file="internships/$filename.md"
@@ -109,7 +90,7 @@ jobs:
 
           done
 
-          # Insert new tiles into internships.html after the <h2> tag
+          # Backup the original internships.html and replace the internship tiles section
           awk -v tiles="$internship_tiles" '
             /<h2>Featured Student Internships<\/h2>/ {print; print "<div class=\"featured-internships\">"; print tiles; print "</div>"; next}
             {print}
