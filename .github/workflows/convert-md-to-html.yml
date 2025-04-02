@@ -63,6 +63,13 @@ jobs:
             exit 1
           fi
 
+      - name: Remove Old Internship Tiles Between <h2> and </section>
+        run: |
+          # Delete everything between <h2> and </section> (including <div class="featured-internships">)
+          sed -i '/<h2>Featured Student Internships<\/h2>/,/<\/section>/ {
+            /<h2>Featured Student Internships<\/h2>/!{/^<\/section>/!d}
+          }' frontend/pages/internships.html
+
       - name: Update Internships Page with Tiles
         run: |
           internship_tiles=""
@@ -89,11 +96,6 @@ jobs:
                 </a>"
 
           done
-
-          # Remove the existing internship tiles section entirely (from <h2> to </section>)
-          sed -i '/<h2>Featured Student Internships<\/h2>/,/<\/section>/ {
-            /<div class="featured-internships">/,/<\/div>/d
-          }' frontend/pages/internships.html
 
           # Add new internship tiles section after <h2> and before </section>
           awk -v tiles="$internship_tiles" '
