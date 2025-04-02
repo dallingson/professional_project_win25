@@ -90,11 +90,16 @@ jobs:
 
           done
 
-          # Remove the old internship tiles section, ensuring we only have one div of .featured-internships
-          sed -i '/<div class="featured-internships">/,/<\/div>/d' frontend/pages/internships.html
+          # Remove existing internship tiles section before adding new ones
+          sed -i '/<h2>Featured Student Internships<\/h2>/,/<\/section>/ {
+            /<div class="featured-internships">/,/<\/div>/d
+          }' frontend/pages/internships.html
 
-          # Add the new tiles section with a single .featured-internships div
-          echo "<div class=\"featured-internships\">$internship_tiles</div>" >> frontend/pages/internships.html
+          # Add new internship tiles section after <h2> and before </section>
+          awk -v tiles="$internship_tiles" '
+            /<h2>Featured Student Internships<\/h2>/ {print; print "<div class=\"featured-internships\">"; print tiles; print "</div>"; next}
+            {print}
+          ' frontend/pages/internships.html > frontend/pages/internships.tmp && mv frontend/pages/internships.tmp frontend/pages/internships.html
 
       - name: Commit and Push Changes
         run: |
