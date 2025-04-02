@@ -1,10 +1,10 @@
 ---
-name: "Alice Smith"
-company: "Google"
-location: "Mountain View, CA"
-start_date: "June 2025"
-end_date: "August 2025"
-position: "Software Engineering Intern"
+name: Alice Smith
+company: Google
+location: Mountain View, CA
+start_date: June 2025
+end_date: August 2025
+position: Software Engineering Intern
 image: ../../images/placeholder.jpg
 ---
 

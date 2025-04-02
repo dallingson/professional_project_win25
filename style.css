@@ -371,7 +371,7 @@ header {
   padding: 15px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  background: white;
+  background:  #0056b3;
   position: relative;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   display: flex;
@@ -380,14 +380,20 @@ header {
   justify-content: space-between; /* Keeps content evenly spaced */
 }
 
+.internship-info {
+  color: white;
+  margin-bottom: 8px;
+}
+.internship-tile p {
+  color: white;
+}
+
 /* Ensure all images have a fixed size and maintain aspect ratio */
 .internship-tile img {
-  width: 100px; /* Fixed image size */
-  height: 100px; /* Fixed image size */
+  width: 100%; /* Fixed image size */
+  height: 80%; /* Fixed image size */
   object-fit: cover; /* Ensures images fill without distortion */
-  border-radius: 5px;
-  margin-bottom: 10px;
-  margin-top: 10px;
+  border-radius: 2px;
 }
 
 /* Ensure any text content within the tile is evenly spaced */

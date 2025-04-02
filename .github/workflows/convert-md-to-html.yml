@@ -67,6 +67,10 @@ jobs:
         run: |
           internship_tiles=""
           
+          # Clear old internship tiles by removing everything between the Featured Student Internships section
+          awk '/<h2>Featured Student Internships<\/h2>/,/<\/div>/ {if ($0 ~ /<\/div>/) print "<div class=\"featured-internships\">"; else next} {print}' frontend/pages/internships.html > frontend/pages/internships.tmp && mv frontend/pages/internships.tmp frontend/pages/internships.html
+
+          # Generate new internship tiles
           for file in frontend/pages/internship-details/*.html; do
             filename=$(basename -- "$file" .html)
             md_file="internships/$filename.md"
