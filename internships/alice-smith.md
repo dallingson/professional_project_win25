@@ -5,7 +5,7 @@ location: "Mountain View, CA"
 start_date: "June 2025"
 end_date: "August 2025"
 position: "Software Engineering Intern"
-image: ./images/placeholder.jpg
+image: ../../images/placeholder.jpg
 ---
 
 ## Internship Details
