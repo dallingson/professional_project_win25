@@ -65,11 +65,11 @@ jobs:
 
       - name: Remove Old Internship Tiles Between <h2> and </section>
         run: |
-          # Delete everything between <h2> and </section> (excluding </section>)
+          # Delete everything between <h2> and </section> but keep </section>
           sed -i '/<h2>Featured Student Internships<\/h2>/,/<\/section>/ {
-            /<h2>Featured Student Internships<\/h2>/!{/^<\/section>/!d}
+          /<\/section>/!d
           }' frontend/pages/internships.html
-
+        
       - name: Update Internships Page with Tiles
         run: |
           internship_tiles=""
