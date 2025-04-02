@@ -17,37 +17,47 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Pandoc
-        run: sudo apt-get install -y pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
 
       - name: Create Internship Details Directory
         run: mkdir -p frontend/pages/internship-details
 
       - name: Convert Markdown to HTML
         run: |
-          shopt -s nullglob  # Prevent errors if no files match
-          files=(internships/*.md)
-          
-          if [ ${#files[@]} -eq 0 ]; then
+          if [[ ! -e internships/*.md ]]; then
             echo "No Markdown files found. Skipping conversion."
             exit 0
           fi
-      
-          for file in "${files[@]}"; do
+
+          for file in internships/*.md; do
             filename=$(basename -- "$file" .md)
-      
-            # Extract metadata
-            name=$(grep -oP '(?<=name: ).*' "$file" | head -1)
-            company=$(grep -oP '(?<=company: ).*' "$file" | head -1)
-            position=$(grep -oP '(?<=position: ).*' "$file" | head -1)
-            image=$(grep -oP '(?<=image: ).*' "$file" | head -1)
+            output_file="frontend/pages/internship-details/${filename}.html"
+            
+            if [[ -f "$output_file" ]]; then
+              echo "Skipping $filename: HTML file already exists."
+              continue
+            fi
+
+            # Extract metadata with fallback values
+            name=$(grep -oP '(?<=name: ).*' "$file" | head -1 || echo "Unknown Intern")
+            company=$(grep -oP '(?<=company: ).*' "$file" | head -1 || echo "Unknown Company")
+            position=$(grep -oP '(?<=position: ).*' "$file" | head -1 || echo "Intern")
+            image=$(grep -oP '(?<=image: ).*' "$file" | head -1 || echo "default.jpg")
             summary=$(awk '/## Internship Details/,/## Key Responsibilities/' "$file" | sed -e '1d' -e '$d' | tr '\n' ' ')
             responsibilities=$(awk '/## Key Responsibilities/,/## Skills Gained/' "$file" | sed -e '1d' -e '$d' | sed 's/^/- /' | tr '\n' ' ')
             skills=$(awk '/## Skills Gained/,/^$/' "$file" | sed -e '1d' -e '$d' | sed 's/^/- /' | tr '\n' ' ')
             reflection=$(awk '/## Intern Reflection/,/## Video Summary/' "$file" | sed -e '1d' -e '$d' | tr '\n' ' ')
-            video_link=$(grep -oP '(?<=iframe src=").*(?=")' "$file" | head -1)
-      
+            video_link=$(grep -oP '(?<=iframe src=").*(?=")' "$file" | head -1 || echo "")
+            
+            if [[ ! -f templates/internship-template.html ]]; then
+              echo "ERROR: Template file is missing!"
+              exit 1
+            fi
+            
             # Convert to HTML
-            pandoc "$file" -o "frontend/pages/internship-details/${filename}.html" \
+            pandoc "$file" -o "$output_file" \
               --template=templates/internship-template.html \
               -V name="$name" -V company="$company" -V position="$position" \
               -V image="$image" -V summary="$summary" -V responsibilities="$responsibilities" \
@@ -56,36 +66,43 @@ jobs:
 
       - name: Ensure Internships Page Exists
         run: |
-          if [ ! -f frontend/pages/internships.html ]; then
+          if [[ ! -f frontend/pages/internships.html ]]; then
             echo "ERROR: frontend/pages/internships.html not found!"
             exit 1
           fi
 
       - name: Update Internships Page with Tiles
         run: |
-            internship_tiles=""
-            for file in frontend/pages/internship-details/*.html; do
-              filename=$(basename -- "$file" .html)
-  
-              # Extract the intern's name, company name, and image from the Markdown
-              name=$(grep -oP '(?<=name: ).*' "internships/$filename.md" | head -1)
-              company=$(grep -oP '(?<=company: ).*' "internships/$filename.md" | head -1)
-              image=$(grep -oP '(?<=image: ).*' "internships/$filename.md" | head -1)
-  
-              internship_tiles+="
-                  <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">\n
-                      <div class=\"internship-banner\" style=\"background-image: url('${image}');\">\n
-                          <div class=\"internship-info\">${name} - ${company}</div>\n
-                      </div>\n
-                      <p>Click to view internship details</p>\n
-                  </a>"
-            done
-  
-            # Corrected: Write `awk` output back into internships.html
+          internship_tiles=""
+          existing_tiles=$(grep -oP '<a href="./internship-details/.*?" class="internship-tile">' frontend/pages/internships.html || echo "")
+
+          for file in frontend/pages/internship-details/*.html; do
+            filename=$(basename -- "$file" .html)
+            
+            if echo "$existing_tiles" | grep -q "$filename"; then
+              echo "Skipping duplicate tile for $filename"
+              continue
+            fi
+
+            name=$(grep -oP '(?<=name: ).*' "internships/$filename.md" | head -1 || echo "Unknown Intern")
+            company=$(grep -oP '(?<=company: ).*' "internships/$filename.md" | head -1 || echo "Unknown Company")
+            image=$(grep -oP '(?<=image: ).*' "internships/$filename.md" | head -1 || echo "default.jpg")
+
+            internship_tiles+="
+                <a href=\"./internship-details/${filename}.html\" class=\"internship-tile\">\n
+                    <div class=\"internship-banner\" style=\"background-image: url('${image}');\">\n
+                        <div class=\"internship-info\">${name} - ${company}</div>\n
+                    </div>\n
+                    <p>Click to view internship details</p>\n
+                </a>"
+          done
+
+          if [[ -n "$internship_tiles" ]]; then
             awk -v tiles="$internship_tiles" '
               /<h2>Featured Student Internships<\/h2>/ {print; print "<div class=\"featured-internships\">"; print tiles; print "</div>"; next}
               {print}
             ' frontend/pages/internships.html > frontend/pages/internships.tmp && mv frontend/pages/internships.tmp frontend/pages/internships.html
+          fi
 
       - name: Commit and Push Changes
         run: |
