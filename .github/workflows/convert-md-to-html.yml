@@ -26,12 +26,14 @@ jobs:
 
       - name: Convert Markdown to HTML
         run: |
-          if [[ ! -e internships/*.md ]]; then
+          files=(internships/*.md)
+
+          if [ ${#files[@]} -eq 0 ]; then
             echo "No Markdown files found. Skipping conversion."
             exit 0
           fi
 
-          for file in internships/*.md; do
+          for file in "${files[@]}"; do
             filename=$(basename -- "$file" .md)
             output_file="frontend/pages/internship-details/${filename}.html"
             
@@ -66,7 +68,7 @@ jobs:
 
       - name: Ensure Internships Page Exists
         run: |
-          if [[ ! -f frontend/pages/internships.html ]]; then
+          if [[ ! -f ./frontend/pages/internships.html ]]; then
             echo "ERROR: frontend/pages/internships.html not found!"
             exit 1
           fi
