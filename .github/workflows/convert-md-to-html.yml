@@ -90,7 +90,7 @@ jobs:
 
           done
 
-          # Remove existing internship tiles section before adding new ones
+          # Remove the existing internship tiles section entirely (from <h2> to </section>)
           sed -i '/<h2>Featured Student Internships<\/h2>/,/<\/section>/ {
             /<div class="featured-internships">/,/<\/div>/d
           }' frontend/pages/internships.html
