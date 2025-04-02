@@ -363,24 +363,54 @@ header {
     box-sizing: border-box; /* Ensures padding doesn't add extra width */
 }
 
-  .internship-tile {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    background: white;
-    position: relative;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+.internship-tile {
+  width: 250px; /* Adjust based on preference */
+  height: 250px; /* Ensures square shape */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background: white;
+  position: relative;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; /* Keeps content evenly spaced */
 }
 
-/* Ensure the video fits inside the tile */
-  .internship-tile iframe {
-    width: 100%;
-    height: 200px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 40px;
+/* Ensure all images have a fixed size and maintain aspect ratio */
+.internship-tile img {
+  width: 100px; /* Fixed image size */
+  height: 100px; /* Fixed image size */
+  object-fit: cover; /* Ensures images fill without distortion */
+  border-radius: 5px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+/* Ensure any text content within the tile is evenly spaced */
+.internship-tile .content {
+  flex-grow: 1; /* Allows text to take up remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Maintain uniform video size */
+.internship-tile iframe {
+  width: 100%;
+  height: 120px; /* Adjust to fit within the tile */
+  border: none;
+  border-radius: 5px;
+}
+
+/* Adjust hover effect */
+.internship-tile:hover {
+  transform: scale(1.05);
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 10;
 }
 
 .internship-banner {
@@ -394,20 +424,6 @@ header {
     top: 0;
     left: 0;
     right: 0;
-}
-
-.internship-tile img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    margin-top: 40px;
-}
-
-.internship-tile:hover {
-  transform: scale(1.1);
-  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
-  z-index: 10;
 }
 
 .featured-profiles {
