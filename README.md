@@ -5,7 +5,7 @@ This repository contains a Markdown template for documenting internship details.
 ## How to Use
 
 1. Open the `internship_template.md` file.
-2. Replace the placeholders (text inside `[]`) with your actual information.
+2. Replace the placeholders with your actual information.
 3. Save the file.
 4. Upload an image related to your internship to the `images/` folder.
 
@@ -21,13 +21,13 @@ This template is designed to be converted into an HTML page. If using GitHub Act
 
 ```md
 ---
-name: "Jane Doe"
-company: "Microsoft"
-location: "Redmond, WA"
-start_date: "May 2025"
-end_date: "August 2025"
-position: "Software Engineering Intern"
-image: "images/janedoe.jpg"
+name: Jane Doe
+company: Microsoft
+location: Redmond, WA
+start_date: May 2025
+end_date: August 2025
+position: Software Engineering Intern
+image: ../../images/janedoe.jpg
 ---
 
 ## Internship Details
