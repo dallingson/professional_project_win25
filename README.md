@@ -27,7 +27,7 @@ location: "Redmond, WA"
 start_date: "May 2025"
 end_date: "August 2025"
 position: "Software Engineering Intern"
-image: "images/janedoe.jpg"
+image: "../../images/janedoe.jpg"
 ---
 
 ## Internship Details
